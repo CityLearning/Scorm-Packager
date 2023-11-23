@@ -1,0 +1,62 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+</head>
+
+<body style="font-family:Arial, sans-serif">
+<h1>
+SCORM packager tool
+</h1>
+<h2>Introduction:
+</h2>
+<p>When we are developing a course for a customer who uses CityREPORTs, we only have to modify the previous course or a "base" course to the specifications of the course desired. This while paying limited attention to SCORM standards, mostly ensuring not to delete key SCORM files or code. 
+On the other hand, courses designed for customers not using CityREPORTs, we must pay more careful attention to SCORM standards, specifically the alteration of the Course Manifest (imsmanifest.xml in the course root). This mainly consists of (re)building the IMS manifest with new data relating to the course and also within that to (re)build the list of files, a manifest must include references to those files - and only those files - that exist throughout the course folder.</p>
+<p>Although there are tools we've used in the past to do this, (such as ProForm Rapid eLearning Studio) they cause nearly as many problems as they solve, among other things still require editing imsmanifest.xml by hand. That is where this tool comes in. </p>
+<h2>How to use:</h2>
+The program is written in Java and comes with a .bat file that can be used to launch the tool with a double-click. Naturally this will only work if there is a working JRE installed on the computer. When launched, the program provides a user interface with the following key parts, outlined below but will be explained in full further down:
+<ol>
+<li>A control area, containing a text box and 4 buttons. At launch, only 2 of the buttons will be useable.</li>
+<li>A Full form, that contains a number of fields</li>
+<li>A Simple Form, that allows a developer to specify only key information about the course and copy those variables widely throughout the generated imsmanifest.xml For space-saving reasons, the controls to choose between the simple form and the full form are located above the Simple Form</li>
+<li>A logging area. This provides contextual information to the user, such as the contents of an existing imsmanifest, the contents of one being generated, java error message, diagnostic information etc.</li>
+</ol>
+A sample screenshot of the Tool at launch is providied below, with the 4 divisions marked with coloured boxes to highlight the differences:<br>
+<img src="helpimages/annotatedform.png">
+<h2>The top/control area:</h2>
+<p>This area contains a text box and 4 buttons: "Open Manifest", "Cancel", "Rebuild" and "Get Help"</p>
+<ol>
+<li>
+  <p>The text box is to receive a foldername, this not having the final \ at the end. You use this by copying a folder name from a window in Windows File Explorer. Such as below, an example from Windows 7 (future versions of Windows may change this, but hopefully not).</p>
+  <p><img src="helpimages/explorer1.png" width="1094" height="529" alt=""/></p>
+<p>The best way to do this is to naviage to the course root, then in the address bar, click on an area to the right of the folder names in the path. In the above screenshot, clicking into the area noted by the green box (i.e. to the right of all entries in the path tree to the left) will cause the address bar to change from a formatted tree version of the folder address (above) to a raw path name (below). When the Address Bar has been coverted into a quasi Text Box, you can then select the whole thing, (if it is not already) and copy it to the clipboard using eithe the right click menu or the Ctrl + C key combination.</p>
+<img src="helpimages/explorer2.png" width="1094" height="529" alt=""/>
+<p>When you've copied the folder address to the clipboard, navigate back to the Tool and click into the top text box. As of now, you will have to use the Ctrl + V key combination to paste the address in, though we are hoping to add a right-click context menu to that in the future.</p>
+</li>
+<li>Use the &quot;Open Manifest&quot; button when you have specified a folder name in the above box and wish to start the repackaging process. Note that it is not strictly necessary to have an imsmanifest.xml file in the folder you wish to repackage, as one can be created from scratch if the existing one is lost/deleted/whatever, but one should verify the course root, which normally includes imsmanifest.xml before doing this.<br>
+Open Manifest will populate the Log area with the contents of the existing imsmanifest.xml or show a diagnostic warning if one is not found.
+</li>
+<li>Use the &quot;Cancel&quot; button to have the Tool forget its current project. Cancel should restore the Tool to its just-launched state.</li>
+<li>&quot;Rebuild&quot; button takes the information spplied by the developer/user. It then builds a list of files in the course package (recursively checking subfolders if needs be). Then the existing imsmanifest.xml (if there was one) is deleted and a new imsmanifest.xml is written. The system determines whether the developer was using the Simple form or the Full Form and deploys the values therein accordingly.<br>
+It will log the outgoing xml code to the Logging area, and note any exceptions during the writing process (this should be extremely rare). If some key inputs are missing, such as any of the course name fields, this action will post a warning to the Logging area and abandon the job.</li>
+<li>&quot;Get Help&quot; currently does not do anything.</li>
+</ol>
+
+<h2>The Full Form</h2>
+The CityLearning course names are added, in either long or short form, to about 6 different places inside imsmanifest.xml. This form allows you to specify all of them individually if you wish, in addition to "keywords" each of which are kept in individual branches in the XML. If you want to add keywords, add them comma separated in this form, allowing no spaces between the commas. However, since in our practice a course only ever has two names, the full name and a course code, much of this is repetitive. The short form will be more useful in the normal course of events.
+<h2>The Simple Form</h2>
+The Simple Form allows the developer to specify 3 key pieces of information:
+<ol>
+<li>The course short code</li>
+<li>The courses' full name</li>
+<li>Any keywords desired, separated by commas like the equivalent field on the full form.</li>
+</ol>
+<p><span style="color:red; font-weight:bold;">WARNING:</span> When using the simple form, its values are copied to a number of imsmanifest.xml fields. Some of those fields cannot be filled with a variable that starts with a number (like some other things in the world of IT, such as variables in programming languages, filenames in some operating systems etc). As such, you should keep the first character(s) alphabetic. If you must use a name starting with a year (e.g. 2020_CML) then maybe prefix that with "SCO_" so that it reads SCO_2020_CML. If you do use a name beginning with a number, the package that you make will most likely fail the SCORM Validation process.</p>
+<p>For space-efficiency reasons, the simple form also has the controls to allow the user to choose between using the Simple Form and the Full form by means of a pair of buttons. When an imsmanifest is opened, the simple form is enabled by default as is the "Use Full Form" button. If you click that, the Simple Form will be disabled, the button to enable the Full form will also be disabled (because the full form is being used) while the full form will be activated alongside the option to return to the simple form.</p>
+<h2>
+The Information/Logging area
+</h2>
+This window provides feedback to the developer. It displays an open manifest when you start a project, (or a no manifest warning if its not there), provides any error messages or programatically generated warnings. It also displays the imsmanifest code generated when you click "Rebuild". Below the text field, there is a status bar showing the current name and version of the Tool.
+</body>
+</html>
